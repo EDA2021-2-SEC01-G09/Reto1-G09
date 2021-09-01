@@ -38,7 +38,41 @@ def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- ")
+    print("0- Salir")
 
+def initCatalog():
+    """
+    Inicializa el catalogo de obras y artistas
+    """
+    return controller.initCatalog()
+
+def loadData(catalog):
+    """
+    Carga la información en la estructura de datos
+    """
+    controller.loadData(catalog)
+
+def printLastArtists(artists):
+    size = lt.size(artists)
+    if size:
+        print(' Estos son los últimos 3 artistas en el archivo cargado: ')
+        for artist in lt.iterator(artists):
+            print('Nombre: ' + artist['DisplayName'] + '  Bio: ' + artist['ArtistBio'] +
+              ' Nacionalidad: ' + artist['Nationality'] + ' Género: ' + artist['Gender'])
+    else:
+        print('No se encontraron artistas')
+
+def printLastArtworks(artworks):
+    size = lt.size(artworks)
+    if size:
+        print(' Estas son las últimas 3 obras de arte en el archivo cargado: ')
+        for artwork in lt.iterator(artworks):
+            print('ID: ' + artwork['ConstituentID'] + ' Titulo: ' + artwork['Title'] + '  Fecha: ' +
+                  artwork['Date'] + ' Artist(as): ' + artwork['CreditLine'] + 
+                  'Clasificación: ' + artwork['Classification'])
+    else:
+        print('No se encontraron obras')
+        
 catalog = None
 
 """
@@ -49,7 +83,18 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-
+        catalog = initCatalog()
+        loadData(catalog)
+        print('')
+        print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
+        print('obras cargadas: ' + str(lt.size(catalog['artworks'])))
+        print('')
+        artists = controller.getLastArtists(catalog, 3)
+        printLastArtists(artists)
+        print('')
+        artworks = controller.getLastArtworks(catalog, 3)
+        printLastArtworks(artworks)
+        print('')
     elif int(inputs[0]) == 2:
         pass
 

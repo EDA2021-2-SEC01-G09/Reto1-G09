@@ -37,12 +37,55 @@ los mismos.
 
 # Construccion de modelos
 
+def newCatalog():
+
+    catalog = {'artists': None,
+               'artworks': None}
+
+    catalog['artists'] = lt.newList()
+    catalog['artworks'] = lt.newList()
+
+    return catalog
+
 # Funciones para agregar informacion al catalogo
+
+def addArtist(catalog, artist):
+    # Se adiciona el artista a la lista de artistas
+    lt.addLast(catalog['artists'], artist)
+
+def addArtwork(catalog, artwork):
+    # Se adiciona la obra a la lista de obras
+    lt.addLast(catalog['artworks'], artwork)
+
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
 
+def getLastArtists(catalog, number):
+    """
+    Retorna los últimos artistas
+    """
+    artists = catalog['artists']
+    size = lt.size(artists) + 1
+    lastartists = lt.newList()
+    for cont in range(size - number, size):
+        artist = lt.getElement(artists, cont)
+        lt.addLast(lastartists, artist)
+    return lastartists
+
+def getLastArtworks(catalog, number):
+    """
+    Retorna las últimas obras
+    """
+    artworks = catalog['artworks']
+    size = lt.size(artworks) + 1
+    lastartworks = lt.newList()
+    for cont in range(size - number, size):
+        artwork = lt.getElement(artworks, cont)
+        lt.addLast(lastartworks, artwork)
+    return lastartworks
+    
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
