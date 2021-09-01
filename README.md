@@ -1,8 +1,8 @@
 #ISIS1225 - Librerias de soporte
 
-Req. 2 - Santiago Arteaga, 200411086, sa-artea@uniandes.edu.co
+Req 2. Nicolas Merchan Cuestas, 202112109, n.merchan@uniandes.edu.co
 
-Req. 3 - Carlos Lozano, 200211089, calozanog@uniandes.edu.co
+Req 3. Andrés Felipe Castro Leguizamon, 201920805, a.castrol@uniandes.edu.co
 
 Este proyecto contiene los Tipos abstractos de datos, estructuras de datos y algoritmos requeridos por el curso ISIS1225-Estructuras de Datos y Algoritmos
 
