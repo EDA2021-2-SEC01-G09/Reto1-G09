@@ -24,10 +24,14 @@
  * Dario Correal - Version inicial
  """
 
-
+import time
 import config as cf
 from DISClib.ADT import list as lt
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.DataStructures.arraylist import subList
+from DISClib.Algorithms.Sorting import insertionsort as insert
+from DISClib.Algorithms.Sorting import shellsort as shell
+from DISClib.Algorithms.Sorting import mergesort as merge
+from DISClib.Algorithms.Sorting import quicksort as quick
 assert cf
 
 """
@@ -37,13 +41,13 @@ los mismos.
 
 # Construccion de modelos
 
-def newCatalog():
+def newCatalog(DataStructure):
 
     catalog = {'artists': None,
                'artworks': None}
 
-    catalog['artists'] = lt.newList()
-    catalog['artworks'] = lt.newList()
+    catalog['artists'] = lt.newList(datastructure=DataStructure)
+    catalog['artworks'] = lt.newList(datastructure=DataStructure)
 
     return catalog
 
@@ -88,4 +92,47 @@ def getLastArtworks(catalog, number):
     
 # Funciones utilizadas para comparar elementos dentro de una lista
 
+def cmpArtworkByDateAcquired(artwork1, artwork2): 
+    """ 
+    Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menores que el de artwork2 Args:
+    artwork1: informacion de la primera obra que incluye su valor 'DateAcquired' 
+    artwork2: informacion de la segunda obra que incluye su valor 'DateAcquired' 
+    """
+    DateAcquired_artwork_1 = artwork1['DateAcquired'].split('-')
+    DateAcquired_artwork_2 = artwork2['DateAcquired'].split('-')
+    if len(DateAcquired_artwork_1) != 1 and len(DateAcquired_artwork_2) != 1:
+        value_artwork_1 = int(DateAcquired_artwork_1[0])*365 + int(DateAcquired_artwork_1[1])*30 + int(DateAcquired_artwork_1[2])
+        value_artwork_2 = int(DateAcquired_artwork_2[0])*365 + int(DateAcquired_artwork_2[1])*30 + int(DateAcquired_artwork_2[2])
+    elif len(DateAcquired_artwork_1) == 1 and len(DateAcquired_artwork_2) != 1:
+        value_artwork_1 = 0
+        value_artwork_2 = int(DateAcquired_artwork_2[0])*365 + int(DateAcquired_artwork_2[1])*30 + int(DateAcquired_artwork_2[2])
+    elif len(DateAcquired_artwork_2) == 1 and len(DateAcquired_artwork_1) != 1:
+        value_artwork_2 = 0
+        value_artwork_1 = int(DateAcquired_artwork_1[0])*365 + int(DateAcquired_artwork_1[1])*30 + int(DateAcquired_artwork_1[2])
+    else:
+        value_artwork_1 = 0
+        value_artwork_2 = 0
+    return value_artwork_1 > value_artwork_2
+
+
 # Funciones de ordenamiento
+
+def sortArtworks_adquisition(catalog, saple_size, SortingMethod):
+    '''
+    Ordena la sublista de una tamaño dado por medio del 
+    algoritmo de ordenamiento seleccionado 
+    '''
+    sub_list = lt.subList(catalog['artworks'], 1, saple_size)
+    sub_list = sub_list.copy()
+    start_time = time.process_time()
+    if SortingMethod == 1:
+        sorted_list = insert.sort(sub_list, cmpArtworkByDateAcquired)
+    elif SortingMethod == 2:
+        sorted_list = shell.sort(sub_list, cmpArtworkByDateAcquired)
+    elif SortingMethod == 3:
+        sorted_list = merge.sort(sub_list, cmpArtworkByDateAcquired)
+    else:
+        sorted_list = quick.sort(sub_list, cmpArtworkByDateAcquired)
+    stop_time = time.process_time()
+    elapsed_time_mseg = elapsed_time_mseg = (stop_time - start_time)*1000  
+    return elapsed_time_mseg, sorted_list

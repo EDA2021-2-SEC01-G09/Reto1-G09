@@ -31,11 +31,11 @@ El controlador se encarga de mediar entre la vista y el modelo.
 
 # Inicialización del Catálogo de obras
 
-def initCatalog():
+def initCatalog(DataStructure):
     """
     Llama la funcion de inicializacion del catalogo del modelo.
     """
-    catalog = model.newCatalog()
+    catalog = model.newCatalog(DataStructure)
     return catalog
 
 # Funciones para la carga de datos
@@ -84,3 +84,10 @@ def getLastArtworks(catalog, number):
     """
     lastartworks = model.getLastArtworks(catalog, number)
     return lastartworks
+
+def sortArtworks_adquisition(catalog, saple_size, SortingMethod):
+    '''
+    Retorna la sublista ordenada en 
+    base a la fecha de adquisición
+    '''
+    return model.sortArtworks_adquisition(catalog, saple_size, SortingMethod)
