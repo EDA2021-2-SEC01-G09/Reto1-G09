@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
+import sys
 import config as cf
 import sys
 import controller
@@ -33,6 +33,8 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
+default_limit = 1000
+sys.setrecursionlimit(default_limit*10)
 
 def printMenu():
     print("Bienvenido")
