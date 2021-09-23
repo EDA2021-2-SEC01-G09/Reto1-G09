@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from DISClib.ADT import list as lt
 import config as cf
 import model
 import csv
@@ -29,7 +30,9 @@ import csv
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
+#######################################################################################################################
 # Inicialización del Catálogo de obras
+#######################################################################################################################
 
 def initCatalog(DataStructure):
     """
@@ -38,7 +41,9 @@ def initCatalog(DataStructure):
     catalog = model.newCatalog(DataStructure)
     return catalog
 
+#######################################################################################################################
 # Funciones para la carga de datos
+#######################################################################################################################
 
 def loadData(catalog):
     """
@@ -48,46 +53,81 @@ def loadData(catalog):
     loadArtists(catalog)
     loadArtworks(catalog)
 
+#######################################################################################################################
+
 def loadArtists(catalog):
     """
     Carga los artistas del archivo
     """
-    artistsfile = cf.data_dir + 'MoMA/Artists-utf8-large.csv'
+    artistsfile = cf.data_dir + 'MoMA/Artists-utf8-small.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist)
+
+#######################################################################################################################
 
 def loadArtworks(catalog):
     """
     Carga las obras del archivo.
     """
-    artworksfile = cf.data_dir + 'MoMA/Artworks-utf8-large.csv'
+    artworksfile = cf.data_dir + 'MoMA/Artworks-utf8-small.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
         model.addArtwork(catalog, artwork)
 
-
+#######################################################################################################################
 # Funciones de ordenamiento
+#######################################################################################################################
 
+def sortArtistYearBirth(lst, sample_size, SortingMethod, initial_year_birth, end_year_birth):
+    sub_list = lt.subList(lst,1,sample_size)
+    return model.sortArtistYearBirth(sub_list, SortingMethod, initial_year_birth, end_year_birth)
+
+#######################################################################################################################
+
+def sortArtworksAdquisition(lst, sample_size, SortingMethod):
+    sub_list = lt.subList(lst,1,sample_size)
+    return model.sortArtworksAdquisition(sub_list, SortingMethod)
+
+#######################################################################################################################
+
+def sortArtworksAdquisitionRange(lst, sample_size, SortingMethod, initial_date_adquisition, end_date_adquisition):
+    sub_list = lt.subList(lst,1,sample_size)
+    return model.sortArtworksAdquisitionRange(sub_list, SortingMethod, 
+                                                initial_date_adquisition, end_date_adquisition)
+
+#######################################################################################################################
+
+def ClasifyArtistsTechnique(catalog,sample_size,Artists_name):
+    sub_list = lt.subList(catalog['artworks'],1,sample_size)
+    lst = catalog['artists']
+    return model.ClasifyArtistsTechnique(sub_list, lst, Artists_name)
+
+#######################################################################################################################
+
+def ClasifyNationalityArtworks(catalog, sample_size, SortingMethod):
+    sub_list = lt.subList(catalog['artworks'],1,sample_size)
+    lst = catalog['artists']
+    return model.ClasifyNationalityArtworks(sub_list, lst, SortingMethod)
+
+#######################################################################################################################
+    
+def TransportArtworksDepartment(catalog, sample_size, SortingMethod, department):
+    sub_list = lt.subList(catalog['artworks'],1,sample_size)
+    return model.TransportArtworksDepartment(sub_list, SortingMethod, department)
+#######################################################################################################################
 # Funciones de consulta sobre el catálogo
+#######################################################################################################################
 
-def getLastArtists(catalog, number):
-    """
-    Retorna los últimos artistas
-    """
-    lastartists = model.getLastArtists(catalog, number)
-    return lastartists
+def getTheFirstElements(lst, num):
+    return model.getTheFirstElements(lst, num)
 
-def getLastArtworks(catalog, number):
-    """
-    Retorna las últimas obras
-    """
-    lastartworks = model.getLastArtworks(catalog, number)
-    return lastartworks
+#######################################################################################################################
 
-def sortArtworks_adquisition(catalog, saple_size, SortingMethod):
-    '''
-    Retorna la sublista ordenada en 
-    base a la fecha de adquisición
-    '''
-    return model.sortArtworks_adquisition(catalog, saple_size, SortingMethod)
+def getTheLasttElements(lst, num):
+    return model.getTheLasttElements(lst, num)
+
+#######################################################################################################################
+
+def ArtistsID(lst):
+    return model.ArtistsID(lst)
