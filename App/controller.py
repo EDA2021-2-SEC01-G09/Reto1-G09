@@ -34,11 +34,11 @@ El controlador se encarga de mediar entre la vista y el modelo.
 # Inicialización del Catálogo de obras
 #######################################################################################################################
 
-def initCatalog(DataStructure):
+def initCatalog(data_structure):
     """
     Llama la funcion de inicializacion del catalogo del modelo.
     """
-    catalog = model.newCatalog(DataStructure)
+    catalog = model.newCatalog(data_structure)
     return catalog
 
 #######################################################################################################################
@@ -59,7 +59,7 @@ def loadArtists(catalog):
     """
     Carga los artistas del archivo
     """
-    artistsfile = cf.data_dir + 'MoMA/Artists-utf8-small.csv'
+    artistsfile = cf.data_dir + 'MoMA/Artists-utf8-large.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist)
@@ -70,7 +70,7 @@ def loadArtworks(catalog):
     """
     Carga las obras del archivo.
     """
-    artworksfile = cf.data_dir + 'MoMA/Artworks-utf8-small.csv'
+    artworksfile = cf.data_dir + 'MoMA/Artworks-utf8-large.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
         model.addArtwork(catalog, artwork)
@@ -79,55 +79,61 @@ def loadArtworks(catalog):
 # Funciones de ordenamiento
 #######################################################################################################################
 
-def sortArtistYearBirth(lst, sample_size, SortingMethod, initial_year_birth, end_year_birth):
+def SortArtistByBirthYear(lst, sample_size, sorting_method, initial_year_birth, end_year_birth, data_structure):
     sub_list = lt.subList(lst,1,sample_size)
-    return model.sortArtistYearBirth(sub_list, SortingMethod, initial_year_birth, end_year_birth)
+    return model.SortArtistByBirthYear(sub_list, sorting_method, initial_year_birth, end_year_birth, data_structure)
 
 #######################################################################################################################
 
-def sortArtworksAdquisition(lst, sample_size, SortingMethod):
+def SortArtworksAdquisition(lst, sample_size, sorting_method):
     sub_list = lt.subList(lst,1,sample_size)
-    return model.sortArtworksAdquisition(sub_list, SortingMethod)
+    return model.SortArtworksAdquisition(sub_list, sorting_method)
 
 #######################################################################################################################
 
-def sortArtworksAdquisitionRange(lst, sample_size, SortingMethod, initial_date_adquisition, end_date_adquisition):
+def SortArtworksAdquisitionRange(lst, sample_size, sorting_method, initial_date_adquisition, 
+                                                                                end_date_adquisition, data_structure):
     sub_list = lt.subList(lst,1,sample_size)
-    return model.sortArtworksAdquisitionRange(sub_list, SortingMethod, 
-                                                initial_date_adquisition, end_date_adquisition)
+    return model.SortArtworksAdquisitionRange(sub_list, sorting_method, initial_date_adquisition,
+                                                                                end_date_adquisition, data_structure)
 
 #######################################################################################################################
 
-def ClasifyArtistsTechnique(catalog,sample_size,Artists_name):
+def ClasifyArtistsTechnique(catalog, sample_size, sorting_method, artists_name, data_structure):
     sub_list = lt.subList(catalog['artworks'],1,sample_size)
     lst = catalog['artists']
-    return model.ClasifyArtistsTechnique(sub_list, lst, Artists_name)
+    return model.ClasifyArtistsTechnique(sub_list, lst, sorting_method, artists_name, data_structure)
 
 #######################################################################################################################
 
-def ClasifyNationalityArtworks(catalog, sample_size, SortingMethod):
+def ClasifyArtworksByNationality(catalog, sample_size, sorting_method, artists_ID_dict, data_structure):
     sub_list = lt.subList(catalog['artworks'],1,sample_size)
-    lst = catalog['artists']
-    return model.ClasifyNationalityArtworks(sub_list, lst, SortingMethod)
+    return model.ClasifyArtworksByNationality(sub_list, sorting_method, artists_ID_dict, data_structure)
 
 #######################################################################################################################
-    
-def TransportArtworksDepartment(catalog, sample_size, SortingMethod, department):
+
+def TransportArtworksDepartment(catalog, sample_size, sorting_method, department, data_structure):
     sub_list = lt.subList(catalog['artworks'],1,sample_size)
-    return model.TransportArtworksDepartment(sub_list, SortingMethod, department)
+    return model.TransportArtworksDepartment(sub_list, sorting_method, department, data_structure)
+
 #######################################################################################################################
 # Funciones de consulta sobre el catálogo
 #######################################################################################################################
 
-def getTheFirstElements(lst, num):
-    return model.getTheFirstElements(lst, num)
+def getTheFirstElements(lst, num, data_structure):
+    return model.GetTheFirstElements(lst, num, data_structure)
 
 #######################################################################################################################
 
-def getTheLasttElements(lst, num):
-    return model.getTheLasttElements(lst, num)
+def getTheLasttElements(lst, num, data_structure):
+    return model.GetTheLastElements(lst, num, data_structure)
 
 #######################################################################################################################
 
-def ArtistsID(lst):
-    return model.ArtistsID(lst)
+def CreationArtistsIDDict(lst):
+    return model.CreationArtistsIDDict(lst)
+
+#######################################################################################################################
+
+def GetConstituentIDListArtwork(artwork):
+    return model.GetConstituentIDListArtwork(artwork)

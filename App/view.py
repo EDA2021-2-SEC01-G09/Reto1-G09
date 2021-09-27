@@ -39,6 +39,7 @@ sys.setrecursionlimit(default_limit*10)
 def printMenu():
     print('')
     print("Bienvenido")
+    print("Nota: Es necesario ejecutar las opciones 1 y 2 en orden cada vez que inicie el programa")
     print("1- Cargar información en el catálogo")
     print("2- Elegir el tipo de ordenamiento que desea utilizar")
     print("3- REQ. 1: listar cronológicamente los artistas ")
@@ -47,14 +48,13 @@ def printMenu():
     print("6- REQ. 3: clasificar las obras de un artista por técnica")
     print("7- REQ. 4: clasificar las obras por la nacionalidad de sus creadores")
     print("8- REQ. 5: transportar obras de un departamento")
-    print("9- REQ. 6: proponer una nueva exposición en el museo")
     print("0- Salir")
 
-def initCatalog(DataStructure):
+def initCatalog(data_structure):
     """
     Inicializa el catalogo de obras y artistas
     """
-    return controller.initCatalog(DataStructure)
+    return controller.initCatalog(data_structure)
 
 def loadData(catalog):
     """
@@ -68,7 +68,7 @@ def loadData(catalog):
 
 def InformationSampleInput(lst):
     size = lt.size(lst)
-    print('El archivo tiene ', str(size), ' elementos.')
+    print('El archivo tiene', str(size), 'elementos.')
     sample_size = int(input('Ingrese el tamaño de la muestra: '))
     if sample_size > size:
         print('El tamaño de la muestra es mayor que el tamaño de los datos')
@@ -82,87 +82,81 @@ def InformationSampleInput(lst):
 #Funciones de exposición de resultados
 #######################################################################################################################
 
-def printLastArtists(artists):
+def printLastArtists(artists, data_structure):
     print('Los últimos 3 artistas en el archivo cargado son: ')
-    filteredList = controller.getTheLasttElements(artists,3)
-    for artist in lt.iterator(filteredList):
+    filtered_list = controller.getTheLasttElements(artists,3, data_structure)
+    for artist in lt.iterator(filtered_list):
             print('Nombre: ' + artist['DisplayName'] + ', Bio: ' + artist['ArtistBio'] +
               ', Nacionalidad: ' + artist['Nationality'] + ', Género: ' + artist['Gender'])
 
 #######################################################################################################################
 
-def printLastArtworks(artworks):
+def printLastArtworks(artworks, data_structure):
     print('Las últimas 3 obras de arte en el archivo cargado son: ')
-    filteredList = controller.getTheLasttElements(artworks,3)
-    for artwork in lt.iterator(filteredList):
+    filtered_list = controller.getTheLasttElements(artworks,3, data_structure)
+    for artwork in lt.iterator(filtered_list):
         print('ID: ' + artwork['ObjectID'] + ', Titulo: ' + artwork['Title'] + ', Fecha de creación: ' +
                artwork['Date'] + ', Artist(as): ' + artwork['CreditLine'] + 
                 ', Clasificación: ' + artwork['Classification'])
 
 #######################################################################################################################
 
-def PrintsortArtistYearBirth(result):
+def PrintsortArtistYearBirth(result, data_structure):
     size = lt.size(result)
-    FirstFilteredList = controller.getTheFirstElements(result, 3) 
-    LastFilteredList = controller.getTheLasttElements(result, 3) 
+    first_filtered_list = controller.getTheFirstElements(result, 3, data_structure) 
+    last_filtered_list = controller.getTheLasttElements(result, 3, data_structure) 
 
-    print('Existen ', size, ' artistas registrados que nacieron en el rango de fechas indicado')
+    print('Existen', size, 'artistas registrados que nacieron en el rango de fechas indicado')
     print('')
     print('Los primeros 3 artistas son: ')
-    for artist in lt.iterator(FirstFilteredList):
+    for artist in lt.iterator(first_filtered_list):
         print('Nombre: ' + artist['DisplayName'] + ', Año de nacimiento: ' +  artist['BeginDate'] + 
                     ', Año de fallecimiento: ' + artist['EndDate'] + ', Nacionalidad '+ artist['Nationality'] + 
                     ', Genero: ' + artist['Gender'])
     print('')
     print('Los últimos 3 artistas son: ')  
-    for artist in lt.iterator(LastFilteredList):
+    for artist in lt.iterator(last_filtered_list):
         print('Nombre: ' + artist['DisplayName'] + ', Año de nacimiento: ' +  artist['BeginDate'] + 
                     ', Año de fallecimiento: ' + artist['EndDate'] + ', Nacionalidad '+ artist['Nationality'] + 
                     ', Genero: ' + artist['Gender'])
 
 #######################################################################################################################
 
-def PrintSortArtworksAdquisition(result):
+def PrintSortArtworksAdquisition(result, data_structure):
     # TODO completar modificaciones para el laboratorio 4
-    FilteredList = controller.getTheFirstElements(result, 10)
+    filtered_list = controller.getTheFirstElements(result, 10, data_structure)
     print('Las primeras 10 obras de arte son: ')
-    for artwork in lt.iterator(FilteredList):
+    for artwork in lt.iterator(filtered_list):
         print('Titulo: ' + artwork['Title'] + ', Fecha de adquisición: ' + artwork['DateAcquired']) 
         
 
 #######################################################################################################################
 
-def PrintsortArtworksAdquisitionRange(result):
+def PrintsortArtworksAdquisitionRange(result, data_structure, artists_ID_dict):
     size_purchase = result[2]
     size = lt.size(result[1])
-
-    FirstFilteredList = controller.getTheFirstElements(result[1],3)
-    LastFilteredList = controller.getTheLasttElements(result[1],3)
-    print('Existen ', size, ' obras de arte adquiridas en el rango de fechas indicado')
-    print('Existen', size_purchase, ' obras de arte adquiridas por compra en el rango de fechas indicado')
+    FirstFilteredList = controller.getTheFirstElements(result[1],3, data_structure)
+    LastFilteredList = controller.getTheLasttElements(result[1],3, data_structure)
+    print('Existen', size, 'obras de arte adquiridas en el rango de fechas indicado')
+    print('Existen', size_purchase, 'obras de arte adquiridas por compra en el rango de fechas indicado')
     print('')
     print('Las primeras 3 obras son: ')
     for artwork in lt.iterator(FirstFilteredList):
-        ID = artwork['ConstituentID']
-        ID_list = ID.strip(ID[0]).strip(ID[-1]).split(', ')
         Autors = ''
-        for Autor_ID in ID_list:
-            autor_name = ArtistsID[Autor_ID]['DisplayName']
+        for Autor_ID in controller.GetConstituentIDListArtwork(artwork):
+            autor_name = artists_ID_dict[Autor_ID]['DisplayName']
             Autors += ' ,' + autor_name
         Autors = Autors[2:]
-
         print('Título: ' + artwork['Title'] + ', Artista(s): ' +  Autors + 
                     ', Fecha: ' + artwork['DateAcquired'] + ', Medio '+ artwork['Medium'] + 
                     ', Dimensiones: ' + artwork['Dimensions'])
     print('')
     print('Las últimas 3 obras son: ')  
     for artwork in lt.iterator(LastFilteredList):
-        ID = artwork['ConstituentID']
-        ID_list = ID.strip(ID[0]).strip(ID[-1]).split(', ')
         Autors = ''
-        for Autor_ID in ID_list:
-            autor_name = ArtistsID[Autor_ID]['DisplayName']
-            Autors += ' ,' + autor_name
+        for Autor_ID in controller.GetConstituentIDListArtwork(artwork):
+            autor_name = artists_ID_dict[Autor_ID]['DisplayName']
+            Autors += ', ' + autor_name
         Autors = Autors[2:]
 
         print('Título: ' + artwork['Title'] + ', Artista(s): ' +  Autors + 
@@ -174,38 +168,55 @@ def PrintsortArtworksAdquisitionRange(result):
 def PrintClasifyArtistsTechnique(result):
     total_artworks = result[1]
     total_techniques = result[2]
-    most_used_technique = result[3]
+    most_used_technique = lt.getElement(total_techniques,1)[0]
     size_total = lt.size(total_artworks)
-    size_techniques = len(total_techniques)
-    print('Existen ', size_total, ' obras registradas del artista')
-    print('El artista utilizó ', size_techniques, ' técnicas en sus obras')
-    print('La técnica más utilizada por el artista es: '+ most_used_technique)
+    size_techniques = lt.size(total_techniques)
+    print('Existen', size_total, 'obras registradas del artista')
+    print('El artista utilizó', size_techniques, 'técnicas en sus obras')
+    print('La técnica más utilizada por el artista es', most_used_technique)
     print('')
     print('Las obras de arte del artista que utilizan esta técnica son: ')
-    for artwork in lt.iterator(total_techniques[most_used_technique]):
+    for artwork in lt.iterator(lt.getElement(total_techniques,1)[1]):
         print('Título: ' + artwork['Title'] + ', Fecha de creación: ' + artwork['Date'] + 
                 ', Medio '+ artwork['Medium'] + ', Dimensiones: ' + artwork['Dimensions'])
 
 #######################################################################################################################
 
-def PrintlasifyNationalityArtworks(result):
-    FilteredList = controller.getTheFirstElements(result,10)
-    
+def PrintClasifyNationalityArtworks(result,catalog, data_structure, artists_ID_dict):
+    filtered_list = controller.getTheFirstElements(result, 10, data_structure)
     print('Las primeras 10 nacionalidades por número de obras son: ')
     print('{:<20}{:<20}'.format('Nacionalidad','Número de obras'))
-    for nationality in lt.iterator(FilteredList):
-        num_artworks_nationality = lt.size(nationality[1])
+    for nationality in lt.iterator(filtered_list):
+        num_artworks_nationality = nationality[1]
         nationality_name = nationality[0]
+        if nationality_name == '':
+                nationality_name = 'Desconocida'
         print('{:<20}{:<20}'.format(nationality_name,num_artworks_nationality))
     print('')
-    artworks_major_nationality = lt.getElement(result,1)[1]
-    num_artworks_major_nacionality = lt.size(artworks_major_nationality)
-    print('Existen ', num_artworks_major_nacionality, ' obras de arte de la mayor nacionalidad')
-    num_exposition = int(input('Ingrese el número de obras que desea ver de la mayor nacionalidad: '))
+    num_artworks_major_nacionality = lt.getElement(result,1)[1]
+    print('Existen', num_artworks_major_nacionality, 'obras de arte de la nacionalidad con mayor número de obras')
+    num_exposition = int(input('Ingrese el número de obras que desea ver de a nacionalidad con mayor número de obras: '))
+
+    print('Cargando...')
     print('')
-    print('Las primeras', num_exposition,' obras de arte de la mayor nacionalidad son: ')
-    NationalityFilteredList = controller.getTheFirstElements(artworks_major_nationality,num_exposition)
-    for artwork in lt.iterator(NationalityFilteredList):
+    filtered_list_artworks = lt.newList()
+    con = 0
+    index = 1
+    while index <= lt.size(catalog['artworks']) and con < 14:
+        artwork = lt.getElement(catalog['artworks'],index)
+        nationality_valid = False
+        for artist_ID in controller.GetConstituentIDListArtwork(artwork):
+            artist_nationality = artists_ID_dict[artist_ID]['Nationality']
+            if artist_nationality == lt.getElement(result,1)[0]:
+                nationality_valid = True
+        if nationality_valid == True:
+            lt.addFirst(filtered_list_artworks,artwork)
+            con += 1
+        index += 1
+
+    definitive_filtered_list_artworks = controller.getTheLasttElements(filtered_list_artworks, 10, data_structure)
+    print('Las primeras', num_exposition, 'obras de arte la nacionalidad con mayor número de obras son: ')
+    for artwork in lt.iterator(definitive_filtered_list_artworks):
         print('Título: ' + artwork['Title'] + ', Fecha de creación: ' + artwork['Date'] + 
                 ', Medio '+ artwork['Medium'] + ', Dimensiones: ' + artwork['Dimensions'])
     
@@ -215,8 +226,9 @@ def PrintTransportArtworksDepartment(result):
     artworks_department = result[1]
     total_cost = result[2]
     total_weight = result[3]
-    print('Se deben transportar', lt.size(artworks_department), ' obras de arte')
-    print('El valor estimado de transporte de todas las obras es ', total_cost, ' USD')
+    print('Se deben transportar', lt.size(artworks_department), 'obras de arte')
+    print('El valor estimado de transporte de todas las obras es', total_cost, 'USD')
+    print('El peso estimado de las obras a transportar es', total_weight, 'Kg')
     print('')
     print('Las 5 obras mas antiguas a transportar son: ')
     for artwork in lt.iterator(result[4]):
@@ -228,9 +240,9 @@ def PrintTransportArtworksDepartment(result):
     print('Las 5 obras mas costosas para transportar son: ')
     for artwork in lt.iterator(result[5]):
         artwork_data = artwork[0]
-        print('Título: ' + artwork_data['Title'] + ', Clasificación' + artwork_data['Classification'] + 
+        print('Título: ' + artwork_data['Title'] + ', Clasificación: ' + artwork_data['Classification'] + 
                     ', Fecha de creación: ' + artwork_data['Date'] + ', Medio '+ artwork_data['Medium'] + 
-                    ', Dimensiones: ' + artwork_data['Dimensions'] + ' Costo de transporte: ' + str(artwork[1]) + ' USD')  
+                    ', Dimensiones: ' + artwork_data['Dimensions'] + ' Costo de transporte: ' + str(artwork[1]) + ' USD')
 
 #######################################################################################################################
 #Función de Menú
@@ -247,25 +259,25 @@ while True:
         print('Estructuras de datos disponibles:')
         print('1)Lista encadenada')
         print('2)Lista ordenada ')
-        DataStructure_choice = input('Eliga el tipo de estrucura de datos: ')
-        if DataStructure_choice == 1:
-            DataStructure = 'SINGLE_LINKED'
+        dataStructure_choice = input('Eliga el tipo de estrucura de datos: ')
+        if dataStructure_choice == 1:
+            data_structure = 'SINGLE_LINKED'
         else:
-            DataStructure = 'ARRAY_LIST'
+            data_structure = 'ARRAY_LIST'
 
         print("Cargando información de los archivos ....")
-        catalog = initCatalog(DataStructure)
+        catalog = initCatalog(data_structure)
         loadData(catalog)
-        ArtistsID = controller.ArtistsID(catalog['artists'])
+        artists_ID_dict = controller.CreationArtistsIDDict(catalog['artists'])
         print('')
         print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
         print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
         print('')
         artists = catalog['artists']
-        printLastArtists(artists)
+        printLastArtists(artists, data_structure)
         print('')
         artworks = catalog['artworks']
-        printLastArtworks(artworks)
+        printLastArtworks(artworks, data_structure)
         print('')
     elif int(inputs[0]) == 2:
         print('Algoritmos de ordenamiento disponibles: ')
@@ -273,7 +285,7 @@ while True:
         print('2) Shell Sort')
         print('3) Merge Sort')
         print('4) Quick Sort')
-        SortingMethod = input('Ingrese el algoritmo elegido: ')
+        sorting_method = input('Ingrese el algoritmo elegido: ')
     elif int(inputs[0]) == 3:
         lst= catalog['artists']
         information = InformationSampleInput(lst)
@@ -283,13 +295,13 @@ while True:
             initial_year_birth = int(input('Ingrese el primer año de nacimiento del intervalo: '))
             end_year_birth = int(input('Ingrese el último año de nacimiento del intervalo: '))
             print('Cargando...')
-            result = controller.sortArtistYearBirth(lst, sample_size, SortingMethod, 
-                                                        initial_year_birth, end_year_birth)
+            result = controller.SortArtistByBirthYear(lst, sample_size, sorting_method, 
+                                                initial_year_birth, end_year_birth, data_structure)
             print('')
-            print("Para la muestra de", sample_size, " elementos, el tiempo (mseg) es: ",
+            print("Para la muestra de", sample_size, "elementos, el tiempo (mseg) es: ",
                                          str(result[0]))
             print('')
-            PrintsortArtistYearBirth(result[1])
+            PrintsortArtistYearBirth(result[1], data_structure)
 
     elif int(inputs[0]) == 4:
         lst = catalog['artworks']
@@ -298,12 +310,12 @@ while True:
         valid = information[1]
         if valid == True:
             print('Cargando...')
-            result = controller.sortArtworksAdquisition(lst,sample_size,SortingMethod)
+            result = controller.SortArtworksAdquisition(lst,sample_size, sorting_method)
             print('')
-            print("Para la muestra de", sample_size, " elementos, el tiempo (mseg) es: ",
+            print("Para la muestra de", sample_size, "elementos, el tiempo (mseg) es: ",
                                          str(result[0]))
             print('')
-            PrintSortArtworksAdquisition(result[1])
+            PrintSortArtworksAdquisition(result[1], data_structure)
     elif int(inputs[0]) == 5:
         lst = catalog['artworks']
         information = InformationSampleInput(lst)
@@ -313,24 +325,25 @@ while True:
             initial_date_adquisition = str(input('Ingrese la primera fecha de adquisición del intervalo: '))
             end_date_adquisition = str(input('Ingrese la primera de adquisición del intervalo: '))
             print('Cargando...')
-            result = controller.sortArtworksAdquisitionRange(lst, sample_size, SortingMethod, 
-                                                        initial_date_adquisition, end_date_adquisition)
+            result = controller.SortArtworksAdquisitionRange(lst, sample_size, sorting_method, 
+                                            initial_date_adquisition, end_date_adquisition, data_structure)
             print('Cargando...')
             print('')
-            print("Para la muestra de", sample_size, " elementos, el tiempo (mseg) es: ",
+            print("Para la muestra de", sample_size, "elementos, el tiempo (mseg) es: ",
                                          str(result[0]))
             print('')
-            PrintsortArtworksAdquisitionRange(result)
+            PrintsortArtworksAdquisitionRange(result, data_structure, artists_ID_dict)
     elif int(inputs[0]) == 6:
         information = InformationSampleInput(catalog['artworks'])
         sample_size = information[0]
         valid = information[1]
         if valid == True:
-            Artists_name = input('Ingrese el nombre del artista: ')
+            artists_name = input('Ingrese el nombre del artista: ')
             print('Cargando...')
-            result = controller.ClasifyArtistsTechnique(catalog, sample_size, Artists_name)
+            result = controller.ClasifyArtistsTechnique(catalog, sample_size, sorting_method, 
+                                                                        artists_name, data_structure)
             print('')
-            print("Para la muestra de", sample_size, " elementos, el tiempo (mseg) es: ",
+            print("Para la muestra de", sample_size, "elementos, el tiempo (mseg) es: ",
                                          str(result[0]))
             print('')
             PrintClasifyArtistsTechnique(result)
@@ -340,12 +353,13 @@ while True:
         valid = information[1]
         if valid == True:
             print('Cargando...')
-            result = controller.ClasifyNationalityArtworks(catalog, sample_size, SortingMethod)
+            result = controller.ClasifyArtworksByNationality(catalog, sample_size, sorting_method,
+                                                                    artists_ID_dict, data_structure)
             print('')
-            print("Para la muestra de", sample_size, " elementos, el tiempo (mseg) es: ",
+            print("Para la muestra de", sample_size, "elementos, el tiempo (mseg) es: ",
                                          str(result[0]))
             print('')
-            PrintlasifyNationalityArtworks(result[1])
+            PrintClasifyNationalityArtworks(result[1],catalog, data_structure, artists_ID_dict)
     elif int(inputs[0]) == 8:
         information = InformationSampleInput(catalog['artworks'])
         sample_size = information[0]
@@ -353,11 +367,12 @@ while True:
         if valid == True:
             department = str(input('Ingrese el nombre del departamento: '))
             print('Cargando...')
-            result = controller.TransportArtworksDepartment(catalog, sample_size, SortingMethod, department)
+            result = controller.TransportArtworksDepartment(catalog, sample_size, sorting_method, 
+                                                                            department, data_structure)
             print('')
-            print("Para la muestra de", sample_size, " elementos, el tiempo (mseg) es: ",
+            print("Para la muestra de", sample_size, "elementos, el tiempo (mseg) es: ",
                                          str(result[0]))
-            PrintTransportArtworksDepartment(result)              
+            PrintTransportArtworksDepartment(result)                                          
     else:
         sys.exit(0)
 sys.exit(0)
